@@ -1,0 +1,61 @@
+
+name: Build Installer (Windows)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build exe (PyInstaller)
+        run: |
+          pyinstaller --noconsole --onefile main.py
+          echo "PyInstaller exit: $?"
+
+      - name: Install Inno Setup (choco)
+        run: |
+          choco install innosetup -y
+        shell: powershell
+
+      - name: Create installer (Inno Setup)
+        run: |
+          $iss = @'
+[Setup]
+AppName=등대교회 재정관리
+AppVersion=1.0
+DefaultDirName={pf}\등대교회 재정관리
+DefaultGroupName=등대교회 재정관리
+OutputBaseFilename=LighthouseChurchFinance_Setup
+Compression=lzma
+SolidCompression=yes
+[Files]
+Source: "dist\main.exe"; DestDir: "{app}"; Flags: ignoreversion
+[Icons]
+Name: "{group}\등대교회 재정관리"; Filename: "{app}\main.exe"
+'@
+          $iss | Out-File -FilePath build.iss -Encoding utf8
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" build.iss
+        shell: powershell
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-installer
+          path: LighthouseChurchFinance_Setup.exe
