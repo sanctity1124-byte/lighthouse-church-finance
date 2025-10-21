@@ -1,29 +1,16 @@
 
-# ⛪ 등대교회 재정관리 (Lighthouse Church Finance)
+# 등대교회 재정관리 (Installer-ready)
 
-Electron + SQLite 기반의 교회 재정 관리 프로그램입니다.  
-수입과 지출을 기록하고, 연도·월·주별 통계를 시각적으로 확인할 수 있습니다.
+이 레포지토리는 등대교회 재정관리 프로그램의 GitHub 자동 빌드(설치형 EXE)용 샘플입니다.
 
-## 📦 설치 및 실행 방법
+## 로컬에서 실행 (개발용)
+1. Python 설치 (3.8+ 권장)
+2. 가상환경 생성 및 활성화 (선택)
+3. 패키지 설치:
+   pip install -r requirements.txt
+4. 실행:
+   python main.py
 
-```bash
-npm install
-npm start
-```
-
-## 🧱 exe 설치파일 생성
-
-```bash
-npm run dist
-```
-빌드 후 `dist/` 폴더 내에 Windows 설치파일이 생성됩니다.
-
-## ✨ 주요 기능
-- 수입/지출 등록 및 관리
-- 기간별 통계 그래프 표시
-- PDF 및 CSV 내보내기
-- 완전 오프라인 실행 (SQLite DB 저장)
-
----
-
-© 2025 등대교회
+## GitHub Actions로 설치형 EXE 빌드
+이 레포지토리를 GitHub에 올리면 `.github/workflows/build-installer.yml`이 자동으로 실행되어 Windows용 설치파일(.exe)을 생성합니다.
+생성된 설치파일은 Actions의 Artifacts 또는 Release에서 다운로드 가능합니다.
